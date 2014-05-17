@@ -1,4 +1,4 @@
-Wampa [![NPM](https://nodei.co/npm/wampa.png)](https://nodei.co/npm/wampa/)
+Wampa [![Build Status](https://secure.travis-ci.org/ben-bradley/wampa.png)](http://travis-ci.org/ben-bradley/wampa) [![NPM](https://nodei.co/npm/wampa.png?downloads=true)](https://nodei.co/npm/wampa/)
 =====
 Bi-directional, evented, websocketed, JSON RPC.
 

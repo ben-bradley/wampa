@@ -6,11 +6,21 @@ var server = http.createServer();
 var wampaServer = new Wampa.Server({ server: server, path: '/wampa' });
 
 wampaServer.on('connection', function(socket) {
-  console.log('connected!');
-  socket.on('message', function(msg) {
-    console.log(msg);
-  })
-});
 
+  socket.on('expose', function(fns) {
+    socket.run.ping('blargh!', 'honk!');
+  });
+
+  socket.on('myping', function(data) {
+    console.log('got myping: ', data);
+  });
+
+  socket.expose({
+    serveBacon: function() {
+      console.log('the client wants bacon!');
+    }
+  });
+
+});
 
 server.listen(8000);

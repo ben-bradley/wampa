@@ -1,5 +1,41 @@
 {
+  "name": "wampa",
+  "version": "0.0.3",
+  "description": "Bi-directional, evented, websocketed, JSON RPC.  It's kinda like WAMP, but not really.",
+  "keywords": [
+    "bi-directional",
+    "RPC",
+    "ws",
+    "websocket",
+    "JSON",
+    "evented",
+    "wamp"
+  ],
+  "scripts": {
+    "test": "cd test && mocha ./"
+  },
+  "author": {
+    "name": "Ben Bradley",
+    "email": "ben@bradleyit.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/ben-bradley/wampa"
+  },
   "dependencies": {
     "ws": "^0.4.31"
-  }
+  },
+  "devDependencies": {
+    "should": "^3.3.1",
+    "mocha": "^1.18.2"
+  },
+  "main": "wampa.js",
+  "engines": {
+    "node": "*"
+  },
+  "readmeFilename": "readme.md",
+  "bugs": {
+    "url": "https://github.com/ben-bradley/wampa/issues"
+  },
+  "homepage": "https://github.com/ben-bradley/wampa"
 }

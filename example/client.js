@@ -1,10 +1,20 @@
 var Wampa = require('../wampa');
 
-var wampaClient = new Wampa.Client('http://localhost:8000/wampa');
+var socket = new Wampa.Client('http://localhost:8000/wampa');
 
-wampaClient.on('open', function() {
+socket.on('open', function() {
   console.log('connected');
-  wampaClient.sendJSON({ blargh: 'honk' });
-});
 
-wampaClient.blargh({ honk: 'toot' });
+  socket.expose({
+    ping: function(data, datum) {
+      socket.sendEvent('myping', 'blargh!')
+    },
+    pong: function(data) { console.log('pong!', data); }
+  });
+
+  socket.on('expose', function() {
+    console.log('server is exposed!');
+    socket.run.serveBacon()
+  });
+
+});

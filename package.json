@@ -1,6 +1,6 @@
 {
   "name": "wampa",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Bi-directional, evented, websocketed, JSON RPC.  It's kinda like WAMP, but not really.",
   "keywords": [
     "bi-directional",

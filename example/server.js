@@ -7,7 +7,7 @@ var wampaServer = new Wampa.Server({ server: server, path: '/wampa' });
 
 wampaServer.on('connection', function(socket) {
 
-  socket.on('expose', function(fns) {
+  socket.on('exposed', function(fns) {
     socket.run.ping('blargh!', 'honk!');
   });
 

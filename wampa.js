@@ -8,6 +8,8 @@ var Wampa = {
     var client = new ws(host);
     // register the event handler
     client.on('message', handleEventMessage)
+    client._serverSide = false;
+      client._channels = [];
     return client;
   },
 
@@ -15,12 +17,22 @@ var Wampa = {
     var server = new ws.Server(options);
     // when a connection occurs, register the event handler
     server.on('connection', function(socket) {
+      socket._serverSide = true;
+      socket._channels = [];
       socket.on('message', handleEventMessage);
+      socket.on('publish', function(data) {
+        server.clients.forEach(function(client) {
+          if (client._channels.indexOf(data.channel) !== -1)
+            client.sendEvent(data.channel, data.message);
+        });
+      });
     });
     return server;
   },
 
+  // All JSON-based socket messages get filtered through these functions
   eventMessageHandler: {
+
     // built-in handler to register functions
     expose: function(fns) {
       var socket = this;
@@ -31,15 +43,36 @@ var Wampa = {
           socket.sendEvent('run', { fn: fn, arguments: arguments });
         }
       });
-      this.emit('expose', (this._remoteFns));
+      this.emit('exposed', (this._remoteFns));
     },
+
     // built-in handler to run remote functions
     run: function(data) {
       var args = Object.keys(data.arguments).map(function(k) {
         return data.arguments[k];
       });
       this._exposedFns[data.fn].apply(this, args);
+    },
+
+    // built-in handler to manage subscribe actions
+    subscribe: function(channels) {
+      var socket = this;
+      if (socket._serverSide === false)
+        return false;
+      channels.forEach(function(channel) {
+        if (socket._channels.indexOf(channel) === -1) {
+          socket._channels.push(channel);
+          socket.sendEvent('subscribed', channel);
+        }
+      });
+    },
+
+    // triggers !publish event on the #Server
+    publish: function(data) {
+      if (this._serverSide === true)
+        this.emit('publish', data);
     }
+
   }
 };
 
@@ -61,6 +94,14 @@ ws.prototype.expose = function(fns) {
       fnNames = Object.keys(fns);
   this._exposedFns = fns;
   this.sendEvent('expose', fnNames);
+}
+
+ws.prototype.subscribe = function(channels) {
+  this.sendEvent('subscribe', channels);
+}
+
+ws.prototype.publish = function(channel, message) {
+  this.sendEvent('publish', { channel: channel, message: message });
 }
 
 function handleEventMessage(data) {

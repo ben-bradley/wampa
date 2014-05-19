@@ -12,9 +12,21 @@ socket.on('open', function() {
     pong: function(data) { console.log('pong!', data); }
   });
 
-  socket.on('expose', function() {
+  socket.on('exposed', function() {
     console.log('server is exposed!');
-    socket.run.serveBacon()
+    socket.run.serveBacon();
+  });
+
+  // !subscribed occurs when the server has acknowledged the client's subscriptions
+  socket.on('subscribed', function(channel) {
+    // #publish(<channel>, <message>)
+    socket.publish('arbitraryName', { data: 1234 });
+  });
+
+  socket.subscribe([ 'arbitraryName' ]);
+
+  socket.on('arbitraryName', function(message) {
+    console.log('got delivery of a subscription on "arbitraryName":', message.data);
   });
 
 });

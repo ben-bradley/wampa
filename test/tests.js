@@ -6,8 +6,8 @@ var server;
 
 beforeEach(function(done) {
   server = http.createServer();
+  server.on('listening', done);
   server.listen(3000);
-  done();
 });
 
 afterEach(function(done) {
@@ -19,10 +19,9 @@ afterEach(function(done) {
 describe('Wampa', function() {
 
 
-  it('should talk via web socket', function(done) {
+  it('should be able to call #Server && #Client', function() {
     var wampa = new Wampa.Server({ server: server, path: '/wampa' });
     var socket = new Wampa.Client('http://localhost:3000/wampa');
-    done();
   });
 
 
@@ -30,14 +29,14 @@ describe('Wampa', function() {
 
     it('should emit events on connection', function(done) {
       var wampa = new Wampa.Server({ server: server, path: '/wampa' });
-      wampa.on('connection', function(socket) { done(); })
+      wampa.on('connection', function(socket) { done(); });
       var socket = new Wampa.Client('http://localhost:3000/wampa');
     });
 
     it('should be able to trigger #Client\'s exposed fns', function(done) {
       var wampa = new Wampa.Server({ server: server, path: '/wampa' });
       wampa.on('connection', function(socket) {
-        socket.on('expose', function(fns) {
+        socket.on('exposed', function(fns) {
           socket.run.blargh(new Date().getTime());
         });
       });
@@ -70,6 +69,7 @@ describe('Wampa', function() {
 
 
   describe('#Client', function() {
+
     it('should emit events on connection', function(done) {
       var wampa = new Wampa.Server({ server: server, path: '/wampa' });
       var socket = new Wampa.Client('http://localhost:3000/wampa');
@@ -87,7 +87,7 @@ describe('Wampa', function() {
         });
       });
       var socket = new Wampa.Client('http://localhost:3000/wampa');
-      socket.on('expose', function() {
+      socket.on('exposed', function() {
         socket.run.blargh(new Date().getTime());
       });
     });
@@ -106,7 +106,37 @@ describe('Wampa', function() {
       });
     });
 
+    it('should be able to publish && subscribe to a channel', function(done) {
+      var wampa = new Wampa.Server({ server: server, path: '/wampa' });
+      var socket = new Wampa.Client('http://localhost:3000/wampa');
+      socket.on('subscribed', function(channel) {
+        (channel).should.equal('blargh');
+        socket.publish(channel, { time: new Date().getTime() });
+      });
+      socket.on('open', function() {
+        socket.subscribe([ 'blargh' ]);
+        socket.on('blargh', function(data) {
+          (data.time).should.be.a.Number;
+          done();
+        });
+      });
+    });
+
   });
 
 
 });
+
+/*
+  // !subscribed occurs when the server has acknowledged the client's subscriptions
+  socket.on('subscribed', function(channel) {
+    // #publish(<channel>, <message>)
+    socket.publish('arbitraryName', { data: 1234 });
+  });
+
+  socket.subscribe([ 'arbitraryName' ]);
+
+  socket.on('arbitraryName', function(message) {
+    console.log('got delivery of a subscription on "arbitraryName":', message.data);
+  });
+*/

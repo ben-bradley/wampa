@@ -8,16 +8,24 @@ var wampaServer = new Wampa.Server({ server: server, path: '/wampa' });
 wampaServer.on('connection', function(socket) {
 
   socket.on('exposed', function(fns) {
-    socket.run.ping('blargh!', 'honk!');
+    console.log('client exposed: ', fns);
+    socket.run.ping({ pinged: new Date().getTime() });
   });
 
-  socket.on('myping', function(data) {
-    console.log('got myping: ', data);
+  socket.on('pong', function(data) {
+    var now = new Date().getTime();
+    console.log('[========== ping stats ==========]');
+    console.log('server pinged at:', data.pinged);
+    console.log('client ponged at:', data.ponged);
+    console.log('server -> client:', data.ponged-data.pinged);
+    console.log('client -> server:', now - data.ponged);
+    console.log('round trip      :', now - data.pinged);
+    console.log('[========== ping stats ==========]');
   });
 
   socket.expose({
-    serveBacon: function() {
-      console.log('the client wants bacon!');
+    serveBacon: function(x) {
+      console.log('the client wants '+x+' strips of bacon!');
     }
   });
 

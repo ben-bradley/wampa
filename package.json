@@ -1,6 +1,6 @@
 {
   "name": "wampa",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Bi-directional, evented, websocketed, JSON RPC.  It's kinda like WAMP, but not really.",
   "keywords": [
     "bi-directional",
@@ -12,7 +12,7 @@
     "wamp"
   ],
   "scripts": {
-    "test": "cd test && mocha ./"
+    "test": "cd test && mocha ./ -R spec"
   },
   "author": {
     "name": "Ben Bradley",

@@ -1,6 +1,4 @@
-var ws = require('ws'),
-    events = require('events'),
-    util = require('util');
+var ws = require('ws');
 
 var Wampa = {
 
@@ -8,8 +6,8 @@ var Wampa = {
     var client = new ws(host);
     // register the event handler
     client.on('message', handleEventMessage)
-    client._serverSide = false;
-      client._channels = [];
+    client._server = false;
+    client._channels = [];
     return client;
   },
 
@@ -17,7 +15,7 @@ var Wampa = {
     var server = new ws.Server(options);
     // when a connection occurs, register the event handler
     server.on('connection', function(socket) {
-      socket._serverSide = true;
+      socket._server = true;
       socket._channels = [];
       socket.on('message', handleEventMessage);
       socket.on('publish', function(data) {
@@ -57,7 +55,7 @@ var Wampa = {
     // built-in handler to manage subscribe actions
     subscribe: function(channels) {
       var socket = this;
-      if (socket._serverSide === false)
+      if (socket._server === false)
         return false;
       channels.forEach(function(channel) {
         if (socket._channels.indexOf(channel) === -1) {
@@ -69,7 +67,7 @@ var Wampa = {
 
     // triggers !publish event on the #Server
     publish: function(data) {
-      if (this._serverSide === true)
+      if (this._server === true)
         this.emit('publish', data);
     }
 

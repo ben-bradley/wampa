@@ -6,15 +6,20 @@ socket.on('open', function() {
   console.log('connected');
 
   socket.expose({
-    ping: function(data, datum) {
-      socket.sendEvent('myping', 'blargh!')
-    },
-    pong: function(data) { console.log('pong!', data); }
+    ping: function(data) {
+      data.ponged = new Date().getTime();
+      socket.sendEvent('pong', data);
+      console.log('[========== ping stats ==========]');
+      console.log('server pinged at:', data.pinged);
+      console.log('client ponged at:', data.ponged);
+      console.log('server -> client:', data.ponged-data.pinged);
+      console.log('[========== ping stats ==========]');
+    }
   });
 
-  socket.on('exposed', function() {
-    console.log('server is exposed!');
-    socket.run.serveBacon();
+  socket.on('exposed', function(fns) {
+    console.log('server exposed: ', fns);
+    socket.run.serveBacon(4);
   });
 
   // !subscribed occurs when the server has acknowledged the client's subscriptions

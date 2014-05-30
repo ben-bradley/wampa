@@ -1,5 +1,5 @@
-Wampa [![Build Status](https://secure.travis-ci.org/ben-bradley/wampa.png)](http://travis-ci.org/ben-bradley/wampa) [![NPM](https://nodei.co/npm/wampa.png?downloads=true)](https://nodei.co/npm/wampa/)
-=====
+# Wampa [![Build Status](https://secure.travis-ci.org/ben-bradley/wampa.png)](http://travis-ci.org/ben-bradley/wampa) [![NPM](https://nodei.co/npm/wampa.png?downloads=true)](https://nodei.co/npm/wampa/)
+
 Bi-directional, evented, websocketed, JSON RPC.
 
 It's kinda like WAMP, but not really.
@@ -10,18 +10,18 @@ _(insert pic of me riding a wampa)_
 
 The whole thing sits on top of the `ws` module and provides some sugar and a tiny bit of convenience for the RPC-ish stufff.
 
-Install
-=======
+## Install
+
 `npm install wampa`
 
-Test
-====
+## Test
+
 `npm test`
 -or-
 `mocha`
 
-Usage
-=====
+## Usage
+
 ###server.js
 ```javascript
 var Wampa = require('wampa'),
@@ -82,20 +82,29 @@ socket.on('open', function() {
 });
 ```
 
-Events
-======
+## Events
+
 See https://github.com/einaros/ws/blob/master/doc/ws.md for the details of `ws` events.
 
 - `Wampa.Server === ws.Server()`
 - `Wampa.Client === ws()`
 - `socket.on('expose', function([FnNames]) { });`
 
-Methods
-=======
+## Methods
+
 - `Socket.expose({})` - Accepts an object of functions to expose to the connected socket.
 - `Socket.run.<exposed fn>` - Triggers exposed functions on the connected socket.
 - `Socket.sendEvent('blargh'[, args ])` - Sends `blargh` event with optional `args` to connected socket.
 
-Examples
-========
+## Examples
+
 Look in the `examples/` folder to see the good stuff.
+
+## Versions
+
+### 0.0.5
+- Fixed the failing tests
+
+### 0.0.4
+- Started keeping track
+- Added rudimentary pub/sub
